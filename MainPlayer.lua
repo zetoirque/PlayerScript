@@ -1,4 +1,4 @@
-local library = loadstring(game:HttpGet(('https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wall%20v3')))()
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
 local Notification = loadstring(game:HttpGet("https://raw.githubusercontent.com/Jxereas/UI-Libraries/main/notification_gui_library.lua", true))()
 
 getgenv().FlySpeed = 10;
@@ -6,9 +6,20 @@ getgenv().FlySpeed = 10;
 local Sound = Instance.new("Sound",game:GetService("SoundService"))
 Sound.SoundId = "rbxassetid://232127604"
 
-local Main = library:CreateWindow("SCRIPT BY ZETOIRQUE")
-local MainSection = Main:CreateFolder("Player")
-local OtherSection = Main:CreateFolder("Other")
+local Main = Library.CreateLib("SCRIPT BY ZETOIRQUE", "Synapse")
+
+local MainTab = Main:NewTab("Player")
+local MainSection = MainTab:NewSection("Player Modification")
+local FlySection = MainTab:NewSection("Fly")
+local InvisibleSection = MainTab:NewSection("Invisibility")
+local TpSection = MainTab:NewSection("TP")
+
+local OtherTab = Main:NewTab("Settings")
+local OtherSection = OtherTab:NewSection("Other")
+local SettingsSection = OtherTab:NewSection("Settings")
+local CustomisationSection = OtherTab:NewSection("Customisation")
+
+
 
 local player = game.Players.LocalPlayer
 local char = player.Character
@@ -89,22 +100,7 @@ end
 
 mouse.KeyDown:connect(function(key) 
 
-    if key:lower() == "h" then
-
-        if flying == true then 
-
-            
-            flying = false
-
-        else 
-
-            flying = true 
-
-            Fly() 
-
-        end 
-
-    elseif key:lower() == "w" then 
+    if key:lower() == "w" then 
 
         ctrl.f = 1 
 
@@ -161,8 +157,7 @@ end)
 --Invisibility Script
 --Settings:
 local ScriptStarted = false
-local Keybind = "G" --Set to whatever you want, has to be the name of a KeyCode Enum.
-local Transparency = true --Will make you slightly transparent when you are invisible. No reason to disable.
+local Transparency = true
  
 local Player = game:GetService("Players").LocalPlayer
 local RealCharacter = Player.Character or Player.CharacterAdded:Wait()
@@ -178,7 +173,7 @@ Part = Instance.new("Part", workspace)
 
 Part.Anchored = true
 Part.Size = Vector3.new(200, 1, 200)
-Part.CFrame = CFrame.new(0, -500, 0) --Set this to whatever you want, just far away from the map.
+Part.CFrame = CFrame.new(0, -500, 0)
 Part.CanCollide = true
 
 FakeCharacter.Parent = workspace
@@ -195,7 +190,7 @@ end
 if Transparency then
   for i, v in pairs(FakeCharacter:GetDescendants()) do
       if v:IsA("BasePart") then
-          v.Transparency = 0.7
+          v.Transparency = 0.5
       end
   end
 end
@@ -218,7 +213,7 @@ function RealCharacterDied()
   Part = Instance.new("Part", workspace)
   Part.Anchored = true
   Part.Size = Vector3.new(200, 1, 200)
-  Part.CFrame = CFrame.new(9999, 9999, 9999) --Set this to whatever you want, just far away from the map.
+  Part.CFrame = CFrame.new(9999, -100,-9999) --Set this to whatever you want, just far away from the map.
   Part.CanCollide = true
   FakeCharacter.Parent = workspace
   FakeCharacter.HumanoidRootPart.CFrame = Part.CFrame * CFrame.new(0, 5, 0)
@@ -261,7 +256,7 @@ Player.CharacterAppearanceLoaded:Connect(RealCharacterDied)
 
 local PseudoAnchor
 
-game:GetService "RunService".RenderStepped:Connect(
+game:GetService("RunService").RenderStepped:Connect(
   function()
       if PseudoAnchor ~= nil then
           PseudoAnchor.CFrame = Part.CFrame * CFrame.new(0, 5, 0)
@@ -275,7 +270,7 @@ local function Invisible()
   if IsInvisible == false then
       local StoredCF = RealCharacter.HumanoidRootPart.CFrame
       RealCharacter.HumanoidRootPart.CFrame = FakeCharacter.HumanoidRootPart.CFrame
-      FakeCharacter.HumanoidRootPart.CFrame = StoredCF
+      FakeCharacter.HumanoidRootPart.CFrame = StoredCF * CFrame.new(0,2,0)
       RealCharacter.Humanoid:UnequipTools()
       Player.Character = FakeCharacter
       workspace.CurrentCamera.CameraSubject = FakeCharacter.Humanoid
@@ -291,7 +286,7 @@ local function Invisible()
       local StoredCF = FakeCharacter.HumanoidRootPart.CFrame
       FakeCharacter.HumanoidRootPart.CFrame = RealCharacter.HumanoidRootPart.CFrame
  
-      RealCharacter.HumanoidRootPart.CFrame = StoredCF
+      RealCharacter.HumanoidRootPart.CFrame = StoredCF * CFrame.new(0,2,0)
  
       FakeCharacter.Humanoid:UnequipTools()
       Player.Character = RealCharacter
@@ -305,19 +300,6 @@ local function Invisible()
       IsInvisible = false
   end
 end
- 
-game:GetService("UserInputService").InputBegan:Connect(
-  function(key, gamep)
-      if gamep then
-          return
-      end
-      if key.KeyCode.Name:lower() == Keybind:lower() and CanInvis and RealCharacter and FakeCharacter then
-          if RealCharacter:FindFirstChild("HumanoidRootPart") and FakeCharacter:FindFirstChild("HumanoidRootPart") then
-              Invisible()
-          end
-      end
-  end
-)
 
 
 
@@ -335,46 +317,6 @@ game:GetService("UserInputService").InputBegan:Connect(
 --ClickTPVar
 local shifthold  = false
 local ClickTP = false
-
-
-
-
-MainSection:Slider("WalkSpeed",{min = 15;
-max = 1500;
-precise = true;
-},function(value)
-
-    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = value
-
-end)
-
-MainSection:Slider("JumpHeigh",{min = 7;
-max = 500;
-precise = true;
-},function(value)
-
-    game.Players.LocalPlayer.Character.Humanoid.JumpHeight = value
-
-end)
-
-MainSection:Toggle("Click-TP",function(bool)
-
-    shared.toggle = bool
-    
-    if shared.toggle == true then
-
-        ClickTP = true
-        shifthold  = false
-
-    else
-
-        ClickTP = false
-        shifthold  = false
-
-    end
-
-end)
-
 
 --ClickTPScript
 mouse.Button1Down:Connect(function()
@@ -406,48 +348,118 @@ end)
 
 
 
-MainSection:Label("Press 'H' To Toggle Fly",{
-    TextSize = 20;
 
-    TextColor = Color3.fromRGB(18,18,18);
-    BgColor = Color3.fromRGB(0,255,109);
 
-    [[--
-    TextColor = Color3.fromRGB(0,255,109);
-    BgColor = Color3.fromRGB(18,18,18);
-    ]]
+
+
+--UI SCRIPTS:
+
+
+
+MainSection:NewSlider("WalkSpeed", "", 500, 15, function(s)
+    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = s
+end)
+
+MainSection:NewSlider("JumpHeigh", "", 500, 7, function(s)
+    game.Players.LocalPlayer.Character.Humanoid.JumpHeight = s
+end)
+
+MainSection:NewToggle("Click-TP", "", function(state)
+    if state then
+        ClickTP = true
+        shifthold  = false
+    else
+        ClickTP = false
+        shifthold  = false
+    end
+end)
+
+
+FlySection:NewKeybind("Fly", "", Enum.KeyCode.H, function()
+
+    if flying == true then 
+
+        flying = false
+
+    else 
+
+        flying = true 
+        Fly() 
+
+    end
+end)
+
+FlySection:NewSlider("FlySpeed", "", 400, 10, function(s)
+    FlySpeed = s
+end)
+
+
+InvisibleSection:NewKeybind("Invisible", "", Enum.KeyCode.G, function()
+
+    if CanInvis and RealCharacter and FakeCharacter then
+        if RealCharacter:FindFirstChild("HumanoidRootPart") and FakeCharacter:FindFirstChild("HumanoidRootPart") then
+            Invisible()
+        end
+    end
+	
+end)
+
+InvisibleSection:NewButton("Debug", "Press This Until Its Rework", function()
+    RealCharacterDied()
+end)
+
+
+
+local oldList = {"Click The Refresh Button To See The Players"}
+
+local dropdown = TpSection:NewDropdown("Tp To a Player","", oldList, function(r)
+
+    if r == oldList[1] then 
+        
+        Notification.new("info", "Information", "Click The Refresh Button To Start Using This", true, 5) 
     
-})
+    elseif game.Players:FindFirstChild(tostring(r)).Character then
 
-MainSection:Slider("FlySpeed",{min = 10;
-max = 400;
-precise = true;
-},function(value)
+         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players:FindFirstChild(tostring(r)).Character.HumanoidRootPart.CFrame
 
-    FlySpeed = value
+    else
+
+        Notification.new("warning", "Warning", "You Can't Actually TP To This Player, Try To Refresh", true, 5)
+
+    end
 
 end)
 
-MainSection:Label("Press 'G' To Toggle Invisibility",{
-    TextSize = 15;
+local dropdown2 = TpSection:NewDropdown("Watch A Player","", oldList, function(r)
 
-    TextColor = Color3.fromRGB(18,18,18);
-    BgColor = Color3.fromRGB(0,255,109);
-
-    [[--
-    TextColor = Color3.fromRGB(0,255,109);
-    BgColor = Color3.fromRGB(18,18,18);
-    ]]
+    if r == oldList[1] then 
+        
+        Notification.new("info", "Information", "Click The Refresh Button To Start Using This", true, 5) 
     
-})
+    elseif game.Players:FindFirstChild(tostring(r)).Character then
 
-MainSection:Box("TP to A Player","string",function(value)
-    
-    if game.Workspace:FindFirstChild(value):FindFirstChild("HumanoidRootPart") then
+         workspace.CurrentCamera.CameraSubject = game.Players:FindFirstChild(tostring(r)).Character.Humanoid
 
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Workspace:FindFirstChild(value):FindFirstChild("HumanoidRootPart").CFrame
+    else
+
+        Notification.new("warning", "Warning", "You Can't Actually Watch This Player, Try To Refresh", true, 5)
 
     end
+
+end)
+
+TpSection:NewButton("Refresh Player Dropdown", "Refreshes Dropdown", function()
+
+    local players = {}
+    for i, v in pairs(game.Players:GetChildren()) do
+    
+        players[i] = v.Name
+    
+    end
+
+
+    dropdown:Refresh(players)
+    dropdown2:Refresh(players)
 
 end)
 
@@ -461,13 +473,33 @@ end)
 
 
 --Other Section
-OtherSection:DestroyGui()
 
-OtherSection:Button("Rejoin Server",function()
+OtherSection:NewButton("Rejoin Server", "Make You Rejoin The Server Where You Are",function()
 
     game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, game.JobId, game.Players.LocalPlayer)
 
 end)
+
+SettingsSection:NewKeybind("ToggleUI", "", Enum.KeyCode.LeftAlt, function()
+	Library:ToggleUI()
+end)
+
+
+local themes = {
+    SchemeColor = Color3.fromRGB(46, 48, 43),
+    Background = Color3.fromRGB(13, 15, 12),
+    Header = Color3.fromRGB(36, 38, 35),
+    TextColor = Color3.fromRGB(152, 99, 53),
+    ElementColor = Color3.fromRGB(24, 24, 24)
+}
+
+for theme, color in pairs(themes) do
+    CustomisationSection:NewColorPicker(theme, "Change your "..theme, color, function(color3)
+        Library:ChangeColor(theme, color3)
+    end)
+end
+
+
 
 
 
